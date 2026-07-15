@@ -2,16 +2,36 @@
 
 Plugin separador configurable para el panel XFCE.
 
-Permite insertar separadores con ancho, color y transparencia personalizables mediante un diálogo de configuración accesible desde el clic derecho del panel.
+Permite insertar separadores con ancho, color y transparencia personalizables mediante un diálogo de configuración accesible desde el clic derecho del panel. Soporta múltiples instancias independientes.
 
 ## Características
 
 - Ancho configurable de 1 a 5000 píxeles
 - Selector de color (cualquier color RGB)
 - Modo transparente / visible
+- Auto-expand: el separador llena todo el espacio disponible
+- Configuración por instancia (cada separador guarda sus propios ajustes)
 - Configuración persistente en `~/.config/xfce4-panel-custom-separator.conf`
 - Compatible con XFCE 4.18+ (API 2.0, wrapper-2.0 externo)
 - Paquete `.deb` incluido para instalación rápida
+
+## Múltiples instancias
+
+Cada separador se identifica por su plugin ID (asignado dinámicamente por el panel). La configuración se almacena por secciones en el archivo de config:
+
+```ini
+[2]
+width=20
+transparent=true
+auto_expand=false
+color=#800080
+
+[4]
+width=6
+transparent=false
+auto_expand=true
+color=#ff0000
+```
 
 ## Requisitos
 
@@ -22,7 +42,7 @@ Permite insertar separadores con ancho, color y transparencia personalizables me
 - `libxfce4util`
 
 En Ubuntu/Zorin:
-```
+```bash
 sudo apt install libxfce4panel-2.0-dev libxfce4ui-2-dev libxfce4util-dev libxfconf-0-dev libgtk-3-dev
 ```
 
@@ -51,14 +71,14 @@ El plugin se instala en:
 make deb
 ```
 
-El paquete se genera en `../xfce4-custom-separator_*.deb`.
+El paquete se genera en `output/`.
 
 ## Uso
 
 1. Tras instalar, el separador aparece al final del panel.
 2. Clic derecho sobre el fondo del panel → **Separator Settings**.
-3. Ajustar ancho, color y transparencia.
-4. La configuración se guarda en `~/.config/xfce4-panel-custom-separator.conf`.
+3. Ajustar ancho, color, transparencia y auto-expand.
+4. La configuración se guarda por instancia en `~/.config/xfce4-panel-custom-separator.conf`.
 
 ## Desinstalar
 
