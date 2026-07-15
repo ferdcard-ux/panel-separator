@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+override_dh_auto_build:
+	gcc -Wall -O2 -DGETTEXT_PACKAGE=\"separator\" -DLOCALEDIR=\"/usr/share/locale\" \
+		$(shell pkg-config --cflags gtk+-3.0 libxfce4panel-2.0 libxfce4ui-2 libxfce4util-1.0 libxfconf-0) \
+		-o libcustom-separator.so separator-plugin.c \
+		$(shell pkg-config --libs gtk+-3.0 libxfce4panel-2.0 libxfce4ui-2 libxfce4util-1.0 libxfconf-0) \
+		-shared -fPIC
+override_dh_auto_install:
+	install -d $(CURDIR)/debian/tmp/usr/lib/x86_64-linux-gnu/xfce4/panel/plugins
+	install -d $(CURDIR)/debian/tmp/usr/share/xfce4/panel/plugins
+	install -D -m 755 libcustom-separator.so $(CURDIR)/debian/tmp/usr/lib/x86_64-linux-gnu/xfce4/panel/plugins/libcustom-separator.so
+	install -D -m 644 debian/custom-separator.desktop $(CURDIR)/debian/tmp/usr/share/xfce4/panel/plugins/custom-separator.desktop
+override_dh_auto_clean:
+	rm -f libcustom-separator.so

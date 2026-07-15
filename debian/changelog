@@ -1,0 +1,7 @@
+xfce4-custom-separator (1.0.0) noble; urgency=low
+
+  * Initial release.
+  * Configurable width, color and transparency via right-click menu.
+  * Settings stored in ~/.config/xfce4-panel-custom-separator.conf.
+
+ -- ferdcard <ferdcard@users.noreply.github.com>  Tue, 14 Jul 2026 23:00:00 +0200

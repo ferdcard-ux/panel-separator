@@ -1,0 +1,21 @@
+# Build artifacts
+*.so
+*.o
+*.ddeb
+
+# Debian build
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/xfce4-custom-separator/
+debian/tmp/
+debian/*.debhelper.log
+debian/*.substvars
+
+# Output
+output/
+
+# Editor
+*~
+*.swp
+.vscode/

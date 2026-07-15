@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    remove|purge)
+        # Remove plugin from panel config
+        USER_HOME=$(eval echo ~$SUDO_USER 2>/dev/null || echo /root)
+        CONF_FILE="$USER_HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml"
+
+        if [ -f "$CONF_FILE" ]; then
+            # Find plugin ID for custom-separator
+            PLUGIN_ID=$(grep -oP 'plugin-\K\d+(?="[^>]*value="custom-separator")' "$CONF_FILE" 2>/dev/null | head -1)
+
+            if [ -n "$PLUGIN_ID" ]; then
+                sed -i "/plugin-$PLUGIN_ID/d" "$CONF_FILE"
+                sed -i "/value=\"$PLUGIN_ID\"/d" "$CONF_FILE"
+            fi
+        fi
+        ;;
+esac
+
+#DEBHELPER#

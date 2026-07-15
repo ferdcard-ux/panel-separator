@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    configure)
+        REAL_USER="${SUDO_USER:-$LOGNAME}"
+        if [ "$REAL_USER" = "root" ]; then
+            REAL_USER="$(getent passwd 1000 | cut -d: -f1)"
+        fi
+
+        if [ -n "$REAL_USER" ] && [ "$REAL_USER" != "root" ]; then
+            CONF_FILE="/home/$REAL_USER/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml"
+
+            if [ -f "$CONF_FILE" ] && ! grep -q 'custom-separator' "$CONF_FILE"; then
+                MAX_ID=$(grep -oP 'value="\K[0-9]+' "$CONF_FILE" | sort -n | tail -1)
+                [ -z "$MAX_ID" ] && MAX_ID=10
+                NEW_ID=$((MAX_ID + 1))
+
+                sed -i "s|<value type=\"int\" value=\"7\"/>|<value type=\"int\" value=\"7\"/>\n        <value type=\"int\" value=\"$NEW_ID\"/>|" "$CONF_FILE"
+                sed -i "/<property name=\"configver\"/i\\    <property name=\"plugin-$NEW_ID\" type=\"string\" value=\"custom-separator\"/>" "$CONF_FILE"
+                chown "$REAL_USER:$REAL_USER" "$CONF_FILE"
+            fi
+        fi
+        ;;
+esac
+
+#DEBHELPER#
