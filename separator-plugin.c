@@ -35,28 +35,24 @@ static gint
 read_plugin_id_from_cmdline (void)
 {
     gchar *cmdline = NULL;
-    gchar **argv = NULL;
-    gint argc = 0;
+    gsize length = 0;
     gint plugin_id = -1;
 
-    if (g_file_get_contents ("/proc/self/cmdline", &cmdline, NULL, NULL)) {
-        gint len;
+    if (g_file_get_contents ("/proc/self/cmdline", &cmdline, &length, NULL) && length > 0) {
         GPtrArray *args = g_ptr_array_new ();
         gchar *p = cmdline;
+        gchar *end = cmdline + length;
 
-        while ((len = strlen (p)) > 0) {
+        while (p < end) {
             g_ptr_array_add (args, g_strdup (p));
-            p += len + 1;
+            p += strlen (p) + 1;
         }
 
-        argc = args->len;
-        argv = (gchar **) g_ptr_array_free (args, FALSE);
-
-        if (argc >= 3) {
-            plugin_id = atoi (argv[2]);
+        if (args->len >= 3) {
+            plugin_id = atoi ((gchar *) g_ptr_array_index (args, 2));
         }
 
-        g_strfreev (argv);
+        g_ptr_array_free (args, TRUE);
     }
     g_free (cmdline);
 
@@ -334,6 +330,12 @@ construct (XfcePanelPlugin *plugin)
     sep = g_new0 (SeparatorData, 1);
     sep->plugin_id = read_plugin_id_from_cmdline ();
     sep->plugin = plugin;
+
+    if (sep->plugin_id < 0) {
+        g_warning ("custom-separator: could not determine plugin ID from cmdline");
+        sep->plugin_id = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (plugin), "xfce-plugin-id"));
+    }
+
     g_object_set_data_full (G_OBJECT (plugin), SEP_DATA_KEY, sep, g_free);
 
     load_config (sep);

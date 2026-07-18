@@ -1,3 +1,11 @@
+xfce4-custom-separator (1.0.1) noble; urgency=low
+
+  * Fix intermittent crash on login caused by buffer overread in
+    read_plugin_id_from_cmdline() when parsing /proc/self/cmdline.
+  * Add fallback for plugin ID detection via xfce-plugin-id property.
+
+ -- ferdcard <ferdcard@users.noreply.github.com>  Sat, 18 Jul 2026 12:00:00 +0200
+
 xfce4-custom-separator (1.0.0) noble; urgency=low
 
   * Initial release.
